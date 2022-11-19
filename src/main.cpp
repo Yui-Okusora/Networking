@@ -11,7 +11,7 @@ int main(int argc, const char** argv) {
 
     asio::io_context context;
 
-    asio::ip::tcp::endpoint endpoint(asio::ip::make_address("https://www.facebook.com/",ec),443);
+    asio::ip::tcp::endpoint endpoint(asio::ip::make_address("93.184.216.34",ec),80);
 
     asio::ip::tcp::socket socket(context);
 
