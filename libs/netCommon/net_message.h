@@ -25,7 +25,7 @@ namespace olc
 
             friend std::ostream& operator<<(std::ostream& out, const message<T>& msg)
             {
-                out<< " ID: " << int(msg.header.id) << " Size: " << msg.header.size;
+                out << " ID: " << int(msg.header.id) << " Size: " << msg.header.size;
                 return out;
             }
 
@@ -59,6 +59,22 @@ namespace olc
                 msg.header.size = msg.size();
 
                 return msg;
+            }
+        };
+
+        template<typename T>
+        class connection;
+
+        template<typename T>
+        struct owned_message
+        {
+            std::shared_ptr<connection<T>> remove = nullptr;
+            message<T> msg;
+
+            friend std::ostream& operator<<(std::ostream& out, const owned_message<T>& msg)
+            {
+                out << msg.msg;
+                return out;
             }
         };
     }
