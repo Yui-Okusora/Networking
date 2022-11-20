@@ -39,18 +39,53 @@ namespace olc
                     if(m_socket.is_open())
                     {
                         id = uid;
+                        ReadHeader();
                     }
                 }
             }
 
-            void ConnectToServer();
-            bool Disconnect();
+            void ConnectToServer(asio::ip::tcp::resolver::results_type& endpoints)
+            {
+                if(m_nOwnerType == owner::client)
+                {
+                    asio::async_connect(m_socket, endpoints,
+                    [this](asio::error_code ec, asio::ip::tcp::endpoint endpoint)
+                    {
+                        if(!ec)
+                        {
+                            ReadHeader();
+                        }
+                    });
+                }
+            }
+
+            void Disconnect()
+            {
+                if(IsConnected())
+                {
+                    asio::post(m_asioContext, [this](){ m_socket.close(); });
+                }
+            }
+
             bool IsConnected() const
             {
                 return m_socket.is_open();
             }
 
-            bool Send(const message<T>& msg);
+            void Send(const message<T>& msg)
+            {
+                asio::post(m_asioContext,
+                [this, msg]()
+                {
+                    bool bWritingMessage = !m_qMessagesOut.empty();
+                    m_qMessagesOut.push_back(msg);
+                    if(!bWritingMessage)
+                    {
+                        WriteHeader();
+                    }
+                    
+                });
+            }
         private:
 
             void ReadHeader()
@@ -102,15 +137,15 @@ namespace olc
                 {
                     if(!ec)
                     {
-                        if(m_qMessageOut.front().body.size() > 0)
+                        if(m_qMessagesOut.front().body.size() > 0)
                         {
                             WriteBody();
                         }
                         else
                         {
-                            m_qMessageOut.pop_front();
+                            m_qMessagesOut.pop_front();
 
-                            if(!m_qMessageOut.empty())
+                            if(!m_qMessagesOut.empty())
                             {
                                 WriteHeader();
                             }
@@ -126,7 +161,24 @@ namespace olc
 
             void WriteBody()
             {
+                asio::async_write(m_socket, asio::buffer(m_qMessagesOut.front().body.data(), m_qMessagesOut.front().body.size()),
+                [this](asio::error_code ec, std::size_t length)
+                {
+                    if(!ec)
+                    {
+                        m_qMessagesOut.pop_front();
 
+                        if(!m_qMessagesOut.empty())
+                        {
+                            WriteHeader();
+                        }
+                    }
+                    else
+                    {
+                        std::cout << "[" << id << "] Write Body Fail.\n";
+                        m_socket.close();
+                    }
+                });
             }
 
             void AddToIncomingMessageQueue()

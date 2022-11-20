@@ -61,7 +61,7 @@ namespace olc
                                 m_deqConnections.push_back(std::move(newconn));
 
                                 m_deqConnections.back()->ConnectToClient(nIDCounter++);
-                                
+
                                 std::cout << "[" << m_deqConnections.back()->GetID() << "] Connection Approved!\n";
                             }
                             else
@@ -145,7 +145,6 @@ namespace olc
             }
 
             tsqueue<owned_message<T>> m_qMessagesIn;
-
 
             std::deque<std::shared_ptr<connection<T>>> m_deqConnections;
 
