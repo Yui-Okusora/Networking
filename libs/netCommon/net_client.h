@@ -44,11 +44,14 @@ namespace olc
                 {
                     m_connection->Disconnect();
                 }
+                
                 m_context.stop();
                 if(thrContext.joinable())
                 {
-                    thrContext -trafic
+                    thrContext.join();
                 }
+
+                m_connection.release();
             }
 
             bool IsConnected()

@@ -1,6 +1,5 @@
 #include <iostream>
 #include "olc_net.h"
-#include "net_connection.h"
 
 enum class CustomMsgTypes : uint32_t
 {
@@ -16,7 +15,7 @@ public:
         olc::net::message<CustomMsgTypes> msg;
         msg.header.id = CustomMsgTypes::FireBullet;
         msg << x << y;
-        send(msg)
+        Send(msg);
     }
 };
 
