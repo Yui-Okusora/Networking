@@ -32,11 +32,112 @@ namespace olc
                 return id;
             }
 
-            bool ConnectToServer();
-            bool Disconnect() const;
-            bool IsConnected();
+            void ConnectToClient(uint32_t uid = 0)
+            {
+                if(m_nOwnerType == owner::server)
+                {
+                    if(m_socket.is_open())
+                    {
+                        id = uid;
+                    }
+                }
+            }
+
+            void ConnectToServer();
+            bool Disconnect();
+            bool IsConnected() const
+            {
+                return m_socket.is_open();
+            }
 
             bool Send(const message<T>& msg);
+        private:
+
+            void ReadHeader()
+            {
+                asio::async_read(m_socket, asio::buffer(&m_msgTemporaryIn.header, sizeof(message_header<T>)),
+                    [this](asio::error_code ec, std::size_t length)
+                    {
+                        if(!ec)
+                        {
+                            if(m_msgTemporaryIn.header.size > 0)
+                            {
+                                m_msgTemporaryIn.body.resize(m_msgTemporaryIn.header.size);
+                                ReadBody();
+                            }
+                            else
+                            {
+                                AddToIncomingMessageQueue();
+                            }
+                        }
+                        else
+                        {
+                            std::cout << "[" << id << "] Read Header Fail.\n";
+                            m_socket.close();
+                        }
+                    });
+            }
+
+            void ReadBody()
+            {
+                asio::async_read(m_socket, asio::buffer(m_msgTemporaryIn.body.data(), m_msgTemporaryIn.body.size()),
+                    [this](asio::error_code ec, std::size_t length)
+                    {
+                        if(!ec)
+                        {
+                            AddToIncomingMessageQueue();
+                        }
+                        else
+                        {
+                            std::cout << "[" << id << "] Read Body Fail.\n";
+                            m_socket.close();
+                        }
+                    });
+            }
+
+            void WriteHeader()
+            {
+                asio::async_write(m_socket, asio::buffer(&m_qMessagesOut.front().header, sizeof(message_header<T>)),
+                [this](asio::error_code ec, std::size_t length)
+                {
+                    if(!ec)
+                    {
+                        if(m_qMessageOut.front().body.size() > 0)
+                        {
+                            WriteBody();
+                        }
+                        else
+                        {
+                            m_qMessageOut.pop_front();
+
+                            if(!m_qMessageOut.empty())
+                            {
+                                WriteHeader();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        std::cout << "[" << id << "] Write Header Fail.\n";
+                        m_socket.close();
+                    }
+                });
+            }
+
+            void WriteBody()
+            {
+
+            }
+
+            void AddToIncomingMessageQueue()
+            {
+                if(m_nOwnerType == owner::server)
+                    m_qMessagesIn.push_back({ this->shared_from_this(), m_msgTemporaryIn});
+                else
+                    m_qMessagesIn.push_back({ nullptr, m_msgTemporaryIn});
+                
+                ReadHeader();
+            }
 
         protected:
             asio::ip::tcp::socket m_socket;
@@ -44,6 +145,7 @@ namespace olc
 
             tsqueue<message<T>> m_qMessagesOut;
             tsqueue<owned_message<T>>& m_qMessagesIn;
+            message<T> m_msgTemporaryIn;
 
             owner m_nOwnerType = owner::server;
             uint32_t id = 0;

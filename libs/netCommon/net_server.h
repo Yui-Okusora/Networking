@@ -52,20 +52,22 @@ namespace olc
                     {
                         if(!ec){
                             std::cout << "[Server] New Connection: " << socket.remote_endpoint() << "\n";
-                            /*std::shared_ptr<connection<T>> newconn = 
+                            std::shared_ptr<connection<T>> newconn = 
                                 std::make_shared<connection<T>>(connection<T>::owner::server, 
                                     m_asioContext, std::move(socket), m_qMessagesIn);
 
                             if(OnClientConnect(newconn))
                             {
                                 m_deqConnections.push_back(std::move(newconn));
+
                                 m_deqConnections.back()->ConnectToClient(nIDCounter++);
+                                
                                 std::cout << "[" << m_deqConnections.back()->GetID() << "] Connection Approved!\n";
                             }
                             else
                             {
                                 std::cout << "[-----] Connection Denied\n";
-                            }*/
+                            }
                         }
                         else
                         {
