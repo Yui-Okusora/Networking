@@ -12,11 +12,25 @@ namespace olc
         class connection : public std::enable_shared_from_this<connection<T>>
         {
         public:
-            connection()
-            {}
+            enum class owner
+            {
+                client,
+                server
+            };
+
+            connection(owner parent, asio::io_context& asioContext, asio::ip::tcp::socket socket, tsqueue<owned_message<T>>& qIn)
+                : m_asioContext(asioContext), m_socket(std::move(socket)), m_qMessagesIn(qIn)
+            {
+                m_nOwnerType = parent;
+            }
 
             virtual ~connection()
             {}
+
+            uint32_t GetID() const
+            {
+                return id;
+            }
 
             bool ConnectToServer();
             bool Disconnect() const;
@@ -30,6 +44,9 @@ namespace olc
 
             tsqueue<message<T>> m_qMessagesOut;
             tsqueue<owned_message<T>>& m_qMessagesIn;
+
+            owner m_nOwnerType = owner::server;
+            uint32_t id = 0;
         };
     }
 }

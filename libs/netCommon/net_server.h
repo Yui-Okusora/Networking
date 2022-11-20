@@ -121,7 +121,7 @@ namespace olc
                 {
                     auto msg = m_qMessagesIn.pop_front();
 
-                    OnMessage(msg.remote, msg.msg);
+                    //OnMessage(msg.remote, msg.msg);
 
                     nMessageCount++;
                 }
@@ -129,7 +129,7 @@ namespace olc
         protected:
             virtual bool OnClientConnect(std::shared_ptr<connection<T>> client)
             {
-
+                return true;
             }
 
             virtual void OnClientDisconnect(std::shared_ptr<connection<T>> client)
