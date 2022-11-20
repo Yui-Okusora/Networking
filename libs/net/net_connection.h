@@ -85,49 +85,6 @@ namespace olc
                 });
             }
         private:
-
-            void ReadHeader()
-            {
-                asio::async_read(m_socket, asio::buffer(&m_msgTemporaryIn.header, sizeof(message_header<T>)),
-                    [this](asio::error_code ec, std::size_t length)
-                    {
-                        if(!ec)
-                        {
-                            if(m_msgTemporaryIn.header.size > 0)
-                            {
-                                m_msgTemporaryIn.body.resize(m_msgTemporaryIn.header.size);
-                                ReadBody();
-                            }
-                            else
-                            {
-                                AddToIncomingMessageQueue();
-                            }
-                        }
-                        else
-                        {
-                            std::cout << "[" << id << "] Read Header Fail.\n";
-                            m_socket.close();
-                        }
-                    });
-            }
-
-            void ReadBody()
-            {
-                asio::async_read(m_socket, asio::buffer(m_msgTemporaryIn.body.data(), m_msgTemporaryIn.body.size()),
-                    [this](asio::error_code ec, std::size_t length)
-                    {
-                        if(!ec)
-                        {
-                            AddToIncomingMessageQueue();
-                        }
-                        else
-                        {
-                            std::cout << "[" << id << "] Read Body Fail.\n";
-                            m_socket.close();
-                        }
-                    });
-            }
-
             void WriteHeader()
             {
                 asio::async_write(m_socket, asio::buffer(&m_qMessagesOut.front().header, sizeof(message_header<T>)),
@@ -178,6 +135,49 @@ namespace olc
                     }
                 });
             }
+
+            void ReadHeader()
+            {
+                asio::async_read(m_socket, asio::buffer(&m_msgTemporaryIn.header, sizeof(message_header<T>)),
+                    [this](asio::error_code ec, std::size_t length)
+                    {
+                        if(!ec)
+                        {
+                            if(m_msgTemporaryIn.header.size > 0)
+                            {
+                                m_msgTemporaryIn.body.resize(m_msgTemporaryIn.header.size);
+                                ReadBody();
+                            }
+                            else
+                            {
+                                AddToIncomingMessageQueue();
+                            }
+                        }
+                        else
+                        {
+                            std::cout << "[" << id << "] Read Header Fail.\n";
+                            m_socket.close();
+                        }
+                    });
+            }
+
+            void ReadBody()
+            {
+                asio::async_read(m_socket, asio::buffer(m_msgTemporaryIn.body.data(), m_msgTemporaryIn.body.size()),
+                    [this](asio::error_code ec, std::size_t length)
+                    {
+                        if(!ec)
+                        {
+                            AddToIncomingMessageQueue();
+                        }
+                        else
+                        {
+                            std::cout << "[" << id << "] Read Body Fail.\n";
+                            m_socket.close();
+                        }
+                    });
+            }
+
 
             void AddToIncomingMessageQueue()
             {

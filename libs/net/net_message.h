@@ -48,7 +48,7 @@ namespace olc
             template<typename DataType>
             friend message<T>& operator>>(message<T>& msg, DataType& data)
             {
-                static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pushed into vector");
+                static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pulled into vector");
 
                 size_t i = msg.body.size() - sizeof(DataType);
 

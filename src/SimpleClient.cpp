@@ -1,5 +1,5 @@
 #include <iostream>
-#include "D:\Code\C++\Networking\libs\netCommon\olc_net.h"
+#include "D:\Code\C++\Networking\libs\net\olc_net.h"
 
 enum class CustomMsgTypes : uint32_t
 {
@@ -7,7 +7,7 @@ enum class CustomMsgTypes : uint32_t
     ServerDeny,
     ServerPing,
     MessageAll,
-    ServerMessage
+    ServerMessage,
 };
 
 class CustomClient : public olc::net::client_interface<CustomMsgTypes>
@@ -19,15 +19,15 @@ public:
         msg.header.id = CustomMsgTypes::ServerPing;
 
         std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
-
         msg << timeNow;
         Send(msg);
     }
 };
 
-int main(){
+int main()
+{
     CustomClient c;
-    c.Connect("127.0.0.1",60000);
+    c.Connect("127.0.0.1", 60000);
 
     bool key[3] = {false, false, false};
     bool old_key[3] = {false, false, false};
@@ -35,25 +35,26 @@ int main(){
     bool bQuit = false;
     while (!bQuit)
     {
-        if(GetForegroundWindow() == GetConsoleWindow())
+        if (GetForegroundWindow() == GetConsoleWindow())
         {
             key[0] = GetAsyncKeyState('1') & 0x8000;
             key[1] = GetAsyncKeyState('2') & 0x8000;
             key[2] = GetAsyncKeyState('3') & 0x8000;
         }
 
-        if(key[0] && !old_key[0])
+        if (key[0] && !old_key[0])
         {
             c.PingServer();
-            std::cout<<"1\n";
         }
-        if(key[2] && !old_key[2]) bQuit = true;
+        if (key[2] && !old_key[2])
+            bQuit = true;
 
-        for(int i = 0; i < 3; i++) old_key[i] = key[i];
+        for (int i = 0; i < 3; i++)
+            old_key[i] = key[i];
 
-        if(c.IsConnected())
+        if (c.IsConnected())
         {
-            if(!c.Incoming().empty())
+            if (!c.Incoming().empty())
             {
                 auto msg = c.Incoming().pop_front().msg;
 
@@ -76,7 +77,6 @@ int main(){
             bQuit = true;
         }
     }
-    
-    
+
     return 0;
 }

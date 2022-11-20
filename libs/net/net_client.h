@@ -1,9 +1,7 @@
 #pragma once
 
 #include "net_common.h"
-#include "net_message.h"
 #include "net_tsqueue.h"
-#include "net_connection.h"
 
 namespace olc
 {
@@ -13,7 +11,8 @@ namespace olc
         class client_interface
         {
         public:
-            client_interface() : m_socket(m_context){}
+            client_interface()
+            {}
 
             virtual ~client_interface()
             {
@@ -73,9 +72,11 @@ namespace olc
             void Send(const message<T>& msg)
 			{
 				if (IsConnected())
-					 m_connection->Send(msg);
+                {
+                    m_connection->Send(msg);
+                }
+					 
 			}
-
 
             tsqueue<owned_message<T>>& Incoming()
             {
@@ -86,8 +87,6 @@ namespace olc
             asio::io_context m_context;
 
             std::thread thrContext;
-
-            asio::ip::tcp::socket m_socket;
 
             std::unique_ptr<connection<T>> m_connection;
         private:

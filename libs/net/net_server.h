@@ -87,6 +87,7 @@ namespace olc
                 {
                     OnClientDisconnect(client);
                     client.reset();
+
                     m_deqConnections.erase(
                         std::remove(m_deqConnections.begin(), m_deqConnections.end(), client), m_deqConnections.end());
                 }
@@ -100,7 +101,7 @@ namespace olc
                     if(client && client->IsConnected())
                     {
                         if(client != pIgnoreClient)
-                            client.Send(msg);
+                            client->Send(msg);
                     }
                     else
                     {
