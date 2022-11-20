@@ -70,6 +70,13 @@ namespace olc
                 else return false;
             }
 
+            void Send(const message<T>& msg)
+			{
+				if (IsConnected())
+					 m_connection->Send(msg);
+			}
+
+
             tsqueue<owned_message<T>>& Incoming()
             {
                 return m_qMessagesIn;

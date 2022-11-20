@@ -68,7 +68,7 @@ namespace olc
         template<typename T>
         struct owned_message
         {
-            std::shared_ptr<connection<T>> remove = nullptr;
+            std::shared_ptr<connection<T>> remote = nullptr;
             message<T> msg;
 
             friend std::ostream& operator<<(std::ostream& out, const owned_message<T>& msg)

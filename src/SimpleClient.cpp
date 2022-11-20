@@ -29,8 +29,8 @@ int main(){
     CustomClient c;
     c.Connect("127.0.0.1",60000);
 
-    bool key[3] = {0,0,0};
-    bool old_key[3] = {0,0,0};
+    bool key[3] = {false, false, false};
+    bool old_key[3] = {false, false, false};
 
     bool bQuit = false;
     while (!bQuit)
@@ -42,7 +42,11 @@ int main(){
             key[2] = GetAsyncKeyState('3') & 0x8000;
         }
 
-        if(key[0] && !old_key[0]) c.PingServer();
+        if(key[0] && !old_key[0])
+        {
+            c.PingServer();
+            std::cout<<"1\n";
+        }
         if(key[2] && !old_key[2]) bQuit = true;
 
         for(int i = 0; i < 3; i++) old_key[i] = key[i];

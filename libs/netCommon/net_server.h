@@ -123,7 +123,7 @@ namespace olc
                 {
                     auto msg = m_qMessagesIn.pop_front();
 
-                    //OnMessage(msg.remote, msg.msg);
+                    OnMessage(msg.remote, msg.msg);
 
                     nMessageCount++;
                 }

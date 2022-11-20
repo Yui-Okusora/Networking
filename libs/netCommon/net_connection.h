@@ -44,7 +44,7 @@ namespace olc
                 }
             }
 
-            void ConnectToServer(asio::ip::tcp::resolver::results_type& endpoints)
+            void ConnectToServer(const asio::ip::tcp::resolver::results_type& endpoints)
             {
                 if(m_nOwnerType == owner::client)
                 {
@@ -62,16 +62,14 @@ namespace olc
             void Disconnect()
             {
                 if(IsConnected())
-                {
                     asio::post(m_asioContext, [this](){ m_socket.close(); });
-                }
             }
 
             bool IsConnected() const
             {
                 return m_socket.is_open();
             }
-
+        public:
             void Send(const message<T>& msg)
             {
                 asio::post(m_asioContext,
