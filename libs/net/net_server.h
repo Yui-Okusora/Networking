@@ -93,7 +93,7 @@ namespace olc
                 }
             }
 
-            void MessageAllClient(const message<T>& msg, std::shared_ptr<connection<T>> pIgnoreClient = nullptr)
+            void MessageAllClients(const message<T>& msg, std::shared_ptr<connection<T>> pIgnoreClient = nullptr)
             {
                 bool bInvalidClientExists = false;
                 for(auto& client : m_deqConnections)
