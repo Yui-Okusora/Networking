@@ -10,6 +10,7 @@ namespace olc
     {
         template<typename T>
         class server_interface;
+        
         template<typename T>
         class connection : public std::enable_shared_from_this<connection<T>>
         {
