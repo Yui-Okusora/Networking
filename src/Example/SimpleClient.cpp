@@ -1,5 +1,5 @@
 #include <iostream>
-#include "D:\Code\C++\Networking\libs\net\olc_net.h"
+#include "../../libs/net/olc_net.h"
 
 enum class CustomMsgTypes : uint32_t
 {
@@ -77,7 +77,7 @@ int main()
                     std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
                     std::chrono::system_clock::time_point timeThen;
                     msg >> timeThen;
-                    std::cout << "Ping: " << std::chrono::duration<double>(timeNow - timeThen).count() << "s\n";
+                    std::cout << "Ping: " << std::chrono::duration<double>(timeNow - timeThen).count() * 1000<< "ms\n";
                 }
                 break;
 

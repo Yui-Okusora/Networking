@@ -1,5 +1,5 @@
 #include <iostream>
-#include "D:\Code\C++\Networking\libs\net\olc_net.h"
+#include "../../libs/net/olc_net.h"
 
 enum class CustomMsgTypes : uint32_t
 {
