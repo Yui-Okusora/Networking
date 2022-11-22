@@ -15,7 +15,9 @@ namespace olc
         public:
             server_interface(uint16_t port)
             : m_asioAcceptor(m_asioContext, asio::ip::tcp::endpoint(asio::ip::tcp::v4(), port))
-            {}
+            {
+
+            }
             virtual ~server_interface()
             {
                 Stop();
@@ -93,7 +95,7 @@ namespace olc
                 }
             }
 
-            void MessageAllClientsz(const message<T>& msg, std::shared_ptr<connection<T>> pIgnoreClient = nullptr)
+            void MessageAllClients(const message<T>& msg, std::shared_ptr<connection<T>> pIgnoreClient = nullptr)
             {
                 bool bInvalidClientExists = false;
                 for(auto& client : m_deqConnections)
@@ -117,10 +119,13 @@ namespace olc
                 }
             }
 
-            void Update(size_t nMaxMessages = -1)
+            void Update(size_t nMaxMessages = -1, bool bWait = S_FALSE)
             {
+                if(bWait) m_qMessagesIn.wait();
+
                 size_t nMessageCount = 0;
-                while(nMessageCount < nMaxMessages && !m_qMessagesIn.empty())
+                
+                while (nMessageCount < nMaxMessages && !m_qMessagesIn.empty())
                 {
                     auto msg = m_qMessagesIn.pop_front();
 
@@ -132,7 +137,7 @@ namespace olc
         protected:
             virtual bool OnClientConnect(std::shared_ptr<connection<T>> client)
             {
-                return true;
+                return false;
             }
 
             virtual void OnClientDisconnect(std::shared_ptr<connection<T>> client)

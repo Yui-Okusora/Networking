@@ -54,11 +54,9 @@ int main()
             c.PingServer();
         }
         if (key[1] && !old_key[1]) c.MessageAll();
-        if (key[2] && !old_key[2])
-            bQuit = true;
+        if (key[2] && !old_key[2]) bQuit = true;
 
-        for (int i = 0; i < 3; i++)
-            old_key[i] = key[i];
+        for (int i = 0; i < 3; i++) old_key[i] = key[i];
 
         if (c.IsConnected())
         {

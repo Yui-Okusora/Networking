@@ -69,6 +69,12 @@ namespace olc
             {
                 return m_socket.is_open();
             }
+
+            void StartListening()
+			{
+				
+			}
+
         public:
             void Send(const message<T>& msg)
             {
@@ -191,10 +197,17 @@ namespace olc
 
         protected:
             asio::ip::tcp::socket m_socket;
+
             asio::io_context& m_asioContext;
 
+
+
             tsqueue<message<T>> m_qMessagesOut;
+            
             tsqueue<owned_message<T>>& m_qMessagesIn;
+
+
+
             message<T> m_msgTemporaryIn;
 
             owner m_nOwnerType = owner::server;

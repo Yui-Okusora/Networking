@@ -53,9 +53,7 @@ namespace olc
                 
                 m_context.stop();
                 if(thrContext.joinable())
-                {
                     thrContext.join();
-                }
 
                 m_connection.release();
             }
@@ -63,18 +61,15 @@ namespace olc
             bool IsConnected()
             {
                 if(m_connection)
-                {
                     return m_connection->IsConnected();
-                }
-                else return false;
+                else
+                    return false;
             }
 
             void Send(const message<T>& msg)
 			{
 				if (IsConnected())
-                {
                     m_connection->Send(msg);
-                }
 					 
 			}
 

@@ -36,7 +36,7 @@ namespace olc
 
                 size_t i = msg.body.size();
 
-                msg.body.resize(msg.body.size()+sizeof(DataType));
+                msg.body.resize(msg.body.size() + sizeof(DataType));
 
                 std::memcpy(msg.body.data() + i, &data, sizeof(DataType));
 
