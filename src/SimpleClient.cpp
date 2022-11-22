@@ -77,7 +77,7 @@ int main()
                     std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
                     std::chrono::system_clock::time_point timeThen;
                     msg >> timeThen;
-                    std::cout << "Ping: " << std::chrono::duration<double>(timeNow - timeThen).count() << "\n";
+                    std::cout << "Ping: " << std::chrono::duration<double>(timeNow - timeThen).count() << "s\n";
                 }
                 break;
 
