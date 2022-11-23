@@ -291,6 +291,7 @@ namespace olc
             uint32_t id = 0;
 
 
+
             uint64_t m_nHandshakeOut   = 0;
             uint64_t m_nHandshakeIn    = 0;
             uint64_t m_nHandshakeCheck = 0;
