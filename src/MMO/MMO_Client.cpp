@@ -6,6 +6,7 @@
 
 #include <unordered_map>
 
+std::string ip="";
 class MMOGame : public olc::PixelGameEngine, olc::net::client_interface<GameMsg>
 {
 public:
@@ -68,7 +69,7 @@ public:
 		//mapObjects[0].nUniqueID = 0;
 		//mapObjects[0].vPos = { 3.0f, 3.0f };
 
-		if (Connect("127.0.0.1", 60000))
+		if (Connect(ip, 60000))
 		{
 			return true;
 		}
@@ -271,6 +272,8 @@ public:
 
 int main()
 {
+	std::cout<<"Server Location: ";
+	std::cin>>ip;
 	MMOGame demo;
 	if (demo.Construct(480, 480, 1, 1))
 		demo.Start();
